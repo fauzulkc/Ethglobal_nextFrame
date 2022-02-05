@@ -1,6 +1,7 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 require("dotenv").config();
 const { alchemyApiKey, alchemyPolygon, mnemonic } = process.env;
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -44,64 +45,65 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-    //  development: {
-    host: "127.0.0.1", // Localhost (default: none)
-    port: 8545, // Standard Ethereum port (default: none)
-    network_id: "*", // Any network (default: none)
-  },
-  rinkeby: {
-    provider: () =>
-      new HDWalletProvider(
-        mnemonic,
-        `https://eth-rinkeby.alchemyapi.io/v2/${alchemyApiKey}`
-      ),
-    network_id: 4,
-    gasPrice: 10e9,
-    skipDryRun: true,
-  },
+    development: {
+      host: "127.0.0.1", // Localhost (default: none)
+      port: 8545, // Standard Ethereum port (default: none)
+      network_id: "*", // Any network (default: none)
+    },
+    rinkeby: {
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://eth-rinkeby.alchemyapi.io/v2/${alchemyApiKey}`
+        ),
+      network_id: 4,
+      gasPrice: 10e9,
+      skipDryRun: true,
+    },
 
-  mumbai: {
-    provider: () =>
-      new HDWalletProvider(
-        mnemonic,
-        `https://polygon-mumbai.g.alchemy.com/v2/${alchemyPolygon}`
-      ),
-    network_id: "80001",
-    skipDryRun: true,
+    mumbai: {
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://polygon-mumbai.g.alchemy.com/v2/${alchemyPolygon}`
+        ),
+      network_id: "80001",
+      skipDryRun: true,
+    },
+    matic: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, `https://rpc-mumbai.matic.today`),
+      network_id: 80001,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+    },
+    // Another network with more advanced options...
+    // advanced: {
+    // port: 8777,             // Custom port
+    // network_id: 1342,       // Custom network
+    // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
+    // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
+    // from: <address>,        // Account to send txs from (default: accounts[0])
+    // websocket: true        // Enable EventEmitter interface for web3 (default: false)
+    // },
+    // Useful for deploying to a public network.
+    // NB: It's important to wrap the provider as a function.
+    // ropsten: {
+    // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
+    // network_id: 3,       // Ropsten's id
+    // gas: 5500000,        // Ropsten has a lower block limit than mainnet
+    // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+    // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+    // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    // },
+    // Useful for private networks
+    // private: {
+    // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
+    // network_id: 2111,   // This network is yours, in the cloud.
+    // production: true    // Treats this network as if it was a public net. (default: false)
+    // }
   },
-  matic: {
-    provider: () =>
-      new HDWalletProvider(mnemonic, `https://rpc-mumbai.matic.today`),
-    network_id: 80001,
-    confirmations: 2,
-    timeoutBlocks: 200,
-    skipDryRun: true,
-  },
-  // Another network with more advanced options...
-  // advanced: {
-  // port: 8777,             // Custom port
-  // network_id: 1342,       // Custom network
-  // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
-  // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-  // from: <address>,        // Account to send txs from (default: accounts[0])
-  // websocket: true        // Enable EventEmitter interface for web3 (default: false)
-  // },
-  // Useful for deploying to a public network.
-  // NB: It's important to wrap the provider as a function.
-  // ropsten: {
-  // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
-  // network_id: 3,       // Ropsten's id
-  // gas: 5500000,        // Ropsten has a lower block limit than mainnet
-  // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-  // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-  // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
-  // },
-  // Useful for private networks
-  // private: {
-  // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
-  // network_id: 2111,   // This network is yours, in the cloud.
-  // production: true    // Treats this network as if it was a public net. (default: false)
-  // }
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
