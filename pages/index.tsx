@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const asset = new web3.eth.Contract(
   Asset.abi as any,
-  "0xCa1162DCACE6f29CBdcbA31978910eAbBd08C62F"
+  "0x4fDD0BA544111AD1b14B0487c2B84988B6dF6def"
 );
 
 const Home: NextPage = () => {
@@ -15,6 +15,8 @@ const Home: NextPage = () => {
   const [balance, setBalance] = useState(0);
   const [error, setError] = useState<any>("");
   const [tokenName, setTokenName] = useState("");
+  const [ownedToken, setOwnedToken] = useState([]);
+  const [ownedTokenURIs, setOwnedTokenURIs] = useState<any>([]);
 
   const mint = async (uri: string) => {
     try {
@@ -22,6 +24,8 @@ const Home: NextPage = () => {
         from: from,
       });
       setTokenName(await asset.methods.name().call());
+      getOwnedTokens();
+      getOwnedTokensURIs();
     } catch (err) {
       setError(err);
     } finally {
@@ -30,13 +34,45 @@ const Home: NextPage = () => {
     }
   };
 
+  const getOwnedTokens = async () => {
+    const ownedToken = await asset.methods.getOwnedTokens().call();
+    setOwnedToken(ownedToken);
+  };
+
+  const getOwnedTokensURIs = async () => {
+    const ownedTokenURIs = await asset.methods.getOwnedTokensURIs().call();
+    const fetchedMetadata = await Promise.all(
+      ownedTokenURIs.map((tokenUri: string) => {
+        return fetch(tokenUri)
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            return data;
+          });
+      })
+    ).catch((err) => {
+      console.log(err);
+    });
+    setOwnedTokenURIs(fetchedMetadata);
+  };
+
+  const showTokens = async () => {
+    const tokens = await asset.methods.getTotalAssets().call;
+  };
+
   useEffect(() => {
     (async () => {
       const accounts = await web3.eth.getAccounts();
       setFrom(accounts[0]);
-
-      const balance = await asset.methods.balanceOf(from).call();
-      setBalance(balance);
+      getOwnedTokens();
+      getOwnedTokensURIs();
+      try {
+        const balance = await asset.methods.balanceOf(from).call();
+        setBalance(balance);
+      } catch (err) {
+        setError(`Balance not available: ${err}`);
+      }
     })();
   }, []);
 
@@ -52,8 +88,27 @@ const Home: NextPage = () => {
           {from}
         </h1>
         <h1 className="text-lg px-6 py-4 bg-orange-200 text-orange-900 border-orange-900 rounded-md">
-          {balance}
+          Total Token: {balance}
         </h1>
+        <h1 className="text-lg px-6 py-4 bg-orange-200 text-orange-900 border-orange-900 rounded-md">
+          {ownedToken.map((token) => {
+            return (
+              <span className="px-1" key={token}>
+                {token}
+              </span>
+            );
+          })}
+        </h1>
+        {ownedTokenURIs.map(
+          ({ name, description, image }: any, index: number) => {
+            return (
+              <span className="px-1" key={name + index}>
+                <p>{description}</p>
+                <img src={image} alt="" />
+              </span>
+            );
+          }
+        )}
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() =>
