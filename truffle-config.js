@@ -50,6 +50,12 @@ module.exports = {
       port: 8545, // Standard Ethereum port (default: none)
       network_id: "*", // Any network (default: none)
     },
+    staging: {
+      host: "localhost", // Connect to geth on the specified
+      port: 8545,
+      from: "0x444a1912c311400fc46D6B50A92aFE4cf11Eb755", // default address to use for any transaction Truffle makes during migrations
+      network_id: "*",
+    },
     rinkeby: {
       provider: () =>
         new HDWalletProvider(
