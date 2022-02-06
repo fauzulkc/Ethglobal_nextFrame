@@ -24,14 +24,18 @@ const Home: NextPage = () => {
       setTokenName(await asset.methods.name().call());
     } catch (err) {
       setError(err);
+    } finally {
+      const balance = await asset.methods.balanceOf(from).call();
+      setBalance(balance);
     }
   };
+
   useEffect(() => {
     (async () => {
       const accounts = await web3.eth.getAccounts();
       setFrom(accounts[0]);
 
-      const balance = await asset.methods.balanceOf(accounts[0]).call();
+      const balance = await asset.methods.balanceOf(from).call();
       setBalance(balance);
     })();
   }, []);
