@@ -34,6 +34,14 @@ contract Asset is ERC721URIStorage {
         return _tokenIds.current();
     }
 
+    function getAllTokenURIs() public view returns (string[] memory) {
+        string[] memory tokenURIs = new string[](getTotalAssets());
+        for (uint256 i = 0; i < getTotalAssets(); i++) {
+            tokenURIs[i] = tokenURI(i + 1);
+        }
+        return tokenURIs;
+    }
+
     function getOwnedTokens() public view returns (uint256[] memory) {
         uint256[] memory ret = ownerTokens[msg.sender];
         return ret;
